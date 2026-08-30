@@ -1,0 +1,11 @@
+/*
+ * build.gradle (raiz) - plugins compartilhados e metadados.
+ */
+plugins {
+    id 'com.android.application' version '8.7.2' apply false
+}
+
+subprojects {
+    group = 'com.fabioad.ddba'
+    version = rootProject.appVersion
+}

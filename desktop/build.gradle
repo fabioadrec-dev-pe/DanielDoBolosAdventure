@@ -1,0 +1,132 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+def mainClassPath = 'com.fabioad.ddba.app.DesktopLauncher'
+application {
+    mainClass = mainClassPath
+}
+
+dependencies {
+    implementation project(':core')
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${gdxVersion}"
+    // ANGLE: OpenGL ES via Direct3D — necessario quando o driver Windows nao expoe OpenGL (VM/RDP/driver basico).
+    implementation "com.badlogicgames.gdx:gdx-lwjgl3-angle:${gdxVersion}"
+    runtimeOnly "com.badlogicgames.gdx:gdx-platform:${gdxVersion}:natives-desktop"
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:${gdxControllersVersion}"
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["${rootProject.projectDir}/assets"]
+        }
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('DanielDoBolosAdventure')
+    archiveClassifier.set('all')
+    archiveVersion.set(project.version)
+    manifest {
+        attributes 'Main-Class': mainClassPath
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
+
+tasks.matching { it.name in ['startScripts', 'distZip', 'distTar'] }.configureEach {
+    dependsOn tasks.named('shadowJar')
+}
+
+def currentOs = org.gradle.internal.os.OperatingSystem.current()
+def appDisplayName = "Daniel do Bolo's Adventure"
+def distRoot = (project.findProperty('distDir')
+        ?: (System.getProperty('user.home') + '/DanielDoBolosAdventure-build')).toString()
+
+tasks.register('runtime', Exec) {
+    group = 'distribution'
+    description = 'Gera um runtime Java minimo (jlink).'
+    def javaHome = System.getProperty('java.home')
+    def outDir = new File(distRoot, 'runtime')
+    doFirst {
+        delete outDir
+        outDir.parentFile.mkdirs()
+    }
+    commandLine "$javaHome/bin/jlink",
+            '--no-header-files', '--no-man-pages', '--strip-debug', '--compress', '2',
+            '--add-modules', 'java.base,java.desktop,java.logging,jdk.unsupported,java.management',
+            '--output', outDir.absolutePath
+}
+
+tasks.register('packageApp', Exec) {
+    group = 'distribution'
+    description = 'Gera o aplicativo nativo com JVM embarcada (jpackage).'
+    dependsOn 'shadowJar', 'runtime'
+    def javaHome = System.getProperty('java.home')
+    def jarFile = shadowJar.archiveFile.get().asFile
+    def inputDir = new File(distRoot, 'staging')
+    def runtimeDir = new File(distRoot, 'runtime')
+    def destDir = new File(distRoot, 'dist')
+    doFirst {
+        delete destDir
+        delete inputDir
+        inputDir.mkdirs()
+        destDir.mkdirs()
+        copy { from jarFile; into inputDir }
+    }
+    commandLine "$javaHome/bin/jpackage",
+            '--type', 'app-image',
+            '--name', appDisplayName,
+            '--app-version', project.version,
+            '--input', inputDir.absolutePath,
+            '--main-jar', jarFile.name,
+            '--main-class', mainClassPath,
+            '--runtime-image', runtimeDir.absolutePath,
+            '--dest', destDir.absolutePath,
+            '--vendor', 'fabio_ad'
+}
+
+tasks.register('installer', Exec) {
+    group = 'distribution'
+    description = 'Gera instalador nativo para o SO atual (jpackage).'
+    dependsOn 'shadowJar', 'runtime'
+    def javaHome = System.getProperty('java.home')
+    def jarFile = shadowJar.archiveFile.get().asFile
+    def inputDir = new File(distRoot, 'staging')
+    def runtimeDir = new File(distRoot, 'runtime')
+    def destDir = new File(distRoot, 'installer')
+    def installerType = currentOs.isWindows() ? 'msi' : (currentOs.isMacOsX() ? 'dmg' : 'deb')
+    doFirst {
+        delete inputDir
+        inputDir.mkdirs()
+        destDir.mkdirs()
+        copy { from jarFile; into inputDir }
+    }
+    commandLine "$javaHome/bin/jpackage",
+            '--type', installerType,
+            '--name', appDisplayName,
+            '--app-version', project.version,
+            '--input', inputDir.absolutePath,
+            '--main-jar', jarFile.name,
+            '--main-class', mainClassPath,
+            '--runtime-image', runtimeDir.absolutePath,
+            '--dest', destDir.absolutePath,
+            '--vendor', 'fabio_ad'
+}
+
+// Portátil Windows (exe + JRE embarcada). Pode ser gerado a partir do Linux.
+tasks.register('packageWindows', Exec) {
+    group = 'distribution'
+    description = 'Gera ZIP Windows com .exe e JRE embarcada (clicar e rodar).'
+    dependsOn 'shadowJar'
+    workingDir = rootProject.projectDir
+    commandLine 'bash', 'tools/package_windows.sh', project.version.toString()
+}

@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    api "com.badlogicgames.gdx:gdx:${gdxVersion}"
+    api "com.badlogicgames.gdx-controllers:gdx-controllers-core:${gdxControllersVersion}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Assets ficam na raiz do repositorio (compartilhados com desktop/android).
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["${rootProject.projectDir}/assets"]
+        }
+    }
+}

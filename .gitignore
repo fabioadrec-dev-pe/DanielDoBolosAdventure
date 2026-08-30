@@ -1,0 +1,33 @@
+# Build outputs
+/build/
+/.gradle/
+*.class
+
+# jlink / jpackage output
+/build/runtime/
+/build/dist/
+/build/installer/
+
+# IDE
+/.idea/
+/.vscode/
+*.iml
+/bin/
+/out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary audio conversion artifacts
+/tools/tmp/
+
+# Android
+/local.properties
+/android/libs/
+/android/build/
+/android/release.keystore
+/android/keystore.properties
+/core/build/
+/desktop/build/
+/dist/
