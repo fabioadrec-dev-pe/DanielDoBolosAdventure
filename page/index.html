@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07150f" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      name="description"
+      content="Daniel do Bolo's Adventure — um jogo brasileiro de aventura em pixel art."
+    />
+    <meta name="author" content="Fabio ADev Tecnologia" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.fabioad.com.br/danieldobolo/" />
+    <link rel="icon" type="image/png" href="assets/app-icon.png" />
+    <link rel="apple-touch-icon" href="assets/app-icon.png" />
+
+    <!-- Prévia para Facebook, WhatsApp e outras redes que usam Open Graph. -->
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fabio ADev Tecnologia" />
+    <meta property="og:title" content="Daniel do Bolo's Adventure" />
+    <meta
+      property="og:description"
+      content="Explore a praia de Brasília Teimosa, enfrente perigos e viva uma aventura brasileira em pixel art."
+    />
+    <meta property="og:url" content="https://www.fabioad.com.br/danieldobolo/" />
+    <meta property="og:image" content="https://www.fabioad.com.br/danieldobolo/assets/hero.png" />
+    <meta property="og:image:secure_url" content="https://www.fabioad.com.br/danieldobolo/assets/hero.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1793" />
+    <meta property="og:image:height" content="877" />
+    <meta property="og:image:alt" content="Daniel do Bolo's Adventure na praia de Brasília Teimosa" />
+
+    <!-- Prévia para Twitter/X e compatibilidade com outros agregadores. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Daniel do Bolo's Adventure" />
+    <meta
+      name="twitter:description"
+      content="Explore a praia de Brasília Teimosa e viva uma aventura brasileira em pixel art."
+    />
+    <meta name="twitter:image" content="https://www.fabioad.com.br/danieldobolo/assets/hero.png" />
+    <meta name="twitter:image:alt" content="Daniel do Bolo's Adventure na praia de Brasília Teimosa" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Daniel do Bolo's Adventure",
+        "description": "Uma aventura brasileira em pixel art ambientada na praia de Brasília Teimosa.",
+        "image": "https://www.fabioad.com.br/danieldobolo/assets/hero.png",
+        "url": "https://www.fabioad.com.br/danieldobolo/",
+        "author": {
+          "@type": "Organization",
+          "name": "Fabio ADev Tecnologia"
+        },
+        "genre": ["Aventura", "Plataforma", "Pixel art"],
+        "gamePlatform": ["Android", "Super Nintendo"]
+      }
+    </script>
+    <title>Daniel do Bolo's Adventure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #09120d;
+        --deep-green: #07341f;
+        --green: #0b7b42;
+        --bright-green: #58f39b;
+        --cream: #fff3c4;
+        --yellow: #ffd329;
+        --orange: #ff7a35;
+        --red: #e53b35;
+        --blue: #39c7e8;
+        --muted: #a6b8aa;
+        --pixel-shadow: 5px 5px 0 var(--ink);
+        --radius: 18px;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        color: var(--cream);
+        background:
+          radial-gradient(circle at 15% 10%, rgba(45, 141, 83, .18), transparent 28rem),
+          linear-gradient(180deg, #06100b 0%, #0b2619 50%, #06100b 100%);
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        line-height: 1.25;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 20;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        opacity: .08;
+        background: repeating-linear-gradient(0deg, transparent 0 3px, #fff 4px 5px);
+        mix-blend-mode: screen;
+      }
+
+      a { color: inherit; }
+
+      .shell {
+        width: min(1180px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 0;
+      }
+
+      .mini-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--bright-green);
+        font-family: "Press Start 2P", monospace;
+        font-size: 11px;
+        line-height: 1.5;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .mini-brand::before {
+        display: block;
+        width: 14px;
+        height: 14px;
+        content: "";
+        background: var(--orange);
+        box-shadow: 7px -7px 0 var(--yellow), 7px 7px 0 var(--red);
+      }
+
+      .topbar nav { display: flex; gap: 24px; }
+
+      .topbar nav a {
+        color: var(--cream);
+        font-size: 24px;
+        text-decoration: none;
+      }
+
+      .topbar nav a:hover { color: var(--yellow); }
+
+      .hero {
+        position: relative;
+        min-height: 610px;
+        overflow: hidden;
+        border: 4px solid var(--ink);
+        border-radius: 28px;
+        background: #0d2819;
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, .35);
+      }
+
+      .hero::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: linear-gradient(90deg, rgba(4, 19, 12, .82) 0%, rgba(4, 19, 12, .28) 52%, rgba(4, 19, 12, .02) 100%);
+      }
+
+      .hero-art {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: .94;
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: 610px;
+        width: min(580px, 100%);
+        padding: clamp(28px, 6vw, 70px);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 8px 12px;
+        border: 2px solid var(--bright-green);
+        color: var(--bright-green);
+        background: rgba(4, 17, 10, .76);
+        font-family: "Press Start 2P", monospace;
+        font-size: 10px;
+        line-height: 1.4;
+      }
+
+      .eyebrow::before { content: "✦"; color: var(--yellow); }
+
+      .hero h1 {
+        max-width: 570px;
+        margin: 20px 0 12px;
+        color: var(--cream);
+        font-family: "Press Start 2P", monospace;
+        font-size: clamp(24px, 4vw, 48px);
+        line-height: 1.25;
+        text-shadow: 5px 5px 0 #8e261e;
+      }
+
+      .hero h1 span { color: var(--yellow); }
+
+      .hero p {
+        max-width: 510px;
+        margin: 0 0 28px;
+        color: #fff9dc;
+        font-size: clamp(24px, 3vw, 31px);
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, .55);
+      }
+
+      .button-row { display: flex; flex-wrap: wrap; gap: 14px; }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 12px 18px;
+        border: 3px solid var(--ink);
+        border-radius: 8px;
+        color: var(--ink);
+        background: var(--yellow);
+        box-shadow: var(--pixel-shadow);
+        font-family: "Press Start 2P", monospace;
+        font-size: 11px;
+        line-height: 1.5;
+        text-decoration: none;
+        transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      }
+
+      .button:hover {
+        filter: brightness(1.08);
+        transform: translate(2px, 2px);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .button.secondary { color: var(--cream); background: var(--green); }
+
+      .section { padding: 96px 0 0; }
+
+      .section-heading { margin-bottom: 30px; }
+
+      .kicker {
+        margin: 0 0 12px;
+        color: var(--orange);
+        font-family: "Press Start 2P", monospace;
+        font-size: 11px;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 0;
+        color: var(--cream);
+        font-family: "Press Start 2P", monospace;
+        font-size: clamp(24px, 4vw, 40px);
+        line-height: 1.35;
+        text-shadow: 4px 4px 0 var(--green);
+      }
+
+      .section-heading p {
+        max-width: 660px;
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 26px;
+      }
+
+      .video-frame {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border: 4px solid var(--ink);
+        border-radius: var(--radius);
+        background: #000;
+        box-shadow: 8px 8px 0 var(--orange);
+      }
+
+      .video-frame iframe { width: 100%; height: 100%; border: 0; }
+
+      .video-fallback {
+        display: block;
+        margin-top: 16px;
+        color: var(--bright-green);
+        font-size: 22px;
+        text-align: right;
+        text-decoration: none;
+      }
+
+      .video-fallback:hover { color: var(--yellow); }
+
+      .downloads {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .download-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 430px;
+        overflow: hidden;
+        border: 4px solid var(--ink);
+        border-radius: var(--radius);
+        background: #12472d;
+        box-shadow: 7px 7px 0 rgba(0, 0, 0, .35);
+      }
+
+      .download-card.google-play { background: #171717; }
+      .download-card.android { background: #12472d; }
+      .download-card.snes-card { background: #1a315c; }
+
+      .card-image {
+        height: 230px;
+        overflow: hidden;
+        border-bottom: 4px solid var(--ink);
+        background: #07150f;
+      }
+
+      .card-image img { width: 100%; height: 100%; object-fit: cover; }
+      .download-card.google-play .card-image { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #292929, #080808); }
+      .download-card.google-play .card-image img { padding: 22px; object-fit: contain; }
+      .download-card.android .card-image img { object-position: center 45%; }
+      .download-card.snes-card .card-image img { object-position: center 19%; filter: saturate(.8) brightness(.7); }
+
+      .card-content { display: flex; flex: 1; flex-direction: column; padding: 22px; }
+
+      .card-label {
+        margin: 0 0 10px;
+        color: var(--yellow);
+        font-family: "Press Start 2P", monospace;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .card-content p { margin: 0 0 20px; color: #d7e6d5; font-size: 25px; }
+
+      .card-button { width: 100%; margin-top: auto; text-align: center; }
+      .card-button.snes { color: var(--cream); background: #2f72ae; }
+      .card-button.soon { color: #fff0bd; background: #8e5d2b; cursor: default; }
+
+      .physical-section {
+        margin-top: 96px;
+        padding: 52px 44px 48px;
+        border: 4px solid var(--ink);
+        border-radius: 24px;
+        background:
+          radial-gradient(circle at 90% 12%, rgba(255, 211, 41, .2), transparent 18rem),
+          linear-gradient(135deg, #143a2a 0%, #0a2418 100%);
+        box-shadow: 9px 9px 0 var(--orange);
+      }
+
+      .physical-layout {
+        display: grid;
+        grid-template-columns: .95fr 1.05fr;
+        align-items: center;
+        gap: 42px;
+      }
+
+      .cartridge-showcase {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .cartridge-shot {
+        margin: 0;
+        padding: 8px;
+        border: 3px solid var(--ink);
+        border-radius: 14px;
+        background: #8f9097;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .cartridge-shot:first-child { transform: rotate(-2deg); }
+      .cartridge-shot:last-child { transform: rotate(2deg); }
+      .cartridge-shot img { display: block; width: 100%; height: 180px; object-fit: cover; border-radius: 8px; }
+      .cartridge-shot figcaption { padding: 8px 4px 2px; color: var(--ink); font-family: "Press Start 2P", monospace; font-size: 10px; text-align: center; }
+
+      .physical-copy > p { margin: 0 0 22px; color: var(--muted); font-size: 27px; }
+
+      .tech-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+      .tech-note {
+        padding: 18px;
+        border: 3px solid var(--ink);
+        border-radius: 12px;
+        background: rgba(3, 17, 10, .52);
+      }
+
+      .tech-note h3 { margin: 0 0 10px; color: var(--yellow); font-family: "Press Start 2P", monospace; font-size: 13px; line-height: 1.5; }
+      .tech-note p { margin: 0; color: #d7e6d5; font-size: 22px; }
+
+      .label-downloads { margin-top: 22px; }
+      .label-downloads p { margin: 0 0 12px; color: var(--cream); font-size: 24px; }
+      .label-downloads .button-row { gap: 10px; }
+      .label-downloads .button { min-height: 46px; padding: 9px 12px; font-size: 10px; }
+
+      .store-links { margin-top: 22px; padding-top: 18px; border-top: 2px solid rgba(255, 243, 196, .2); }
+      .store-links p { margin: 0 0 10px; color: var(--orange); font-family: "Press Start 2P", monospace; font-size: 11px; line-height: 1.5; }
+      .store-links a { margin-right: 14px; color: var(--bright-green); font-size: 22px; text-decoration: none; }
+      .store-links a:hover { color: var(--yellow); }
+      .safety-note { margin: 18px 0 0; color: #92aa98; font-size: 18px; }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+
+      .shot {
+        position: relative;
+        min-height: 210px;
+        overflow: hidden;
+        border: 3px solid var(--ink);
+        border-radius: 12px;
+        background: var(--deep-green);
+        cursor: zoom-in;
+      }
+
+      .shot:nth-child(1), .shot:nth-child(4) { grid-column: span 5; }
+      .shot:nth-child(2), .shot:nth-child(3) { grid-column: span 7; }
+      .shot:nth-child(5) { grid-column: span 5; }
+      .shot:nth-child(6) { grid-column: span 7; }
+      .shot img { width: 100%; height: 100%; min-height: 210px; object-fit: cover; transition: transform .25s ease; }
+      .shot:hover img { transform: scale(1.04); }
+
+      .shot figcaption {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        padding: 7px 9px;
+        border: 2px solid var(--ink);
+        color: var(--cream);
+        background: rgba(5, 18, 11, .8);
+        font-size: 19px;
+      }
+
+      .story {
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        align-items: center;
+        gap: 44px;
+        padding-bottom: 96px;
+      }
+
+      .story-copy p { max-width: 620px; color: var(--muted); font-size: 27px; }
+
+      .secret-section {
+        margin: 0 auto 44px;
+        padding: 18px 22px;
+        border: 2px dashed rgba(88, 243, 155, .48);
+        border-radius: 12px;
+        color: #9bbca5;
+        background: rgba(7, 52, 31, .38);
+        text-align: center;
+      }
+
+      .secret-section p { margin: 0; font-size: 20px; }
+      .secret-title { margin-right: 10px; color: var(--bright-green); font-family: "Press Start 2P", monospace; font-size: 10px; }
+      .secret-sequence { color: var(--yellow); font-family: "Press Start 2P", monospace; font-size: 10px; line-height: 2; }
+
+      .cartridge {
+        position: relative;
+        padding: 28px;
+        border: 4px solid var(--ink);
+        border-radius: 14px;
+        background: var(--orange);
+        box-shadow: 8px 8px 0 var(--ink);
+        transform: rotate(2deg);
+      }
+
+      .cartridge::before {
+        display: block;
+        width: 68%;
+        height: 12px;
+        margin: -8px auto 18px;
+        border: 3px solid var(--ink);
+        content: "";
+        background: var(--yellow);
+      }
+
+      .cartridge img { display: block; width: 100%; border: 4px solid var(--ink); }
+
+      footer {
+        padding: 32px 0 44px;
+        border-top: 3px solid rgba(255, 243, 196, .17);
+        color: var(--muted);
+        font-size: 21px;
+        text-align: center;
+      }
+
+      dialog {
+        width: min(1000px, calc(100% - 30px));
+        padding: 8px;
+        border: 4px solid var(--ink);
+        border-radius: 12px;
+        background: var(--deep-green);
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, .6);
+      }
+
+      dialog::backdrop { background: rgba(0, 0, 0, .8); }
+      dialog img { display: block; width: 100%; max-height: 80vh; object-fit: contain; }
+
+      .close-dialog {
+        display: block;
+        margin: 6px 6px 8px auto;
+        padding: 4px 10px;
+        border: 2px solid var(--ink);
+        color: var(--ink);
+        background: var(--yellow);
+        font-family: "Press Start 2P", monospace;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 800px) {
+        .topbar nav { display: none; }
+        .hero, .hero-copy { min-height: 650px; }
+        .hero::after { background: linear-gradient(0deg, rgba(4, 19, 12, .91) 0%, rgba(4, 19, 12, .18) 78%); }
+        .hero-copy { justify-content: flex-end; }
+        .downloads, .story { grid-template-columns: 1fr; }
+        .physical-layout { grid-template-columns: 1fr; }
+        .story { gap: 32px; }
+        .gallery { grid-template-columns: 1fr 1fr; }
+        .shot:nth-child(n) { grid-column: span 1; }
+        .shot:nth-child(5) { grid-column: span 2; }
+      }
+
+      @media (max-width: 520px) {
+        body { font-size: 20px; }
+        .shell { width: min(100% - 22px, 1180px); }
+        .topbar { padding: 16px 0; }
+        .mini-brand { font-size: 9px; }
+        .hero, .hero-copy { min-height: 590px; }
+        .hero-art { object-position: 64% center; }
+        .hero-copy { padding: 24px; }
+        .hero h1 { font-size: 22px; }
+        .hero p { font-size: 24px; }
+        .section { padding-top: 68px; }
+        .downloads { gap: 16px; }
+        .physical-section { margin-top: 68px; padding: 32px 18px; }
+        .tech-notes { grid-template-columns: 1fr; }
+        .secret-section { margin-bottom: 32px; padding: 16px 12px; }
+        .secret-section p { font-size: 18px; }
+        .secret-title, .secret-sequence { font-size: 9px; }
+        .download-card { min-height: 400px; }
+        .card-image { height: 200px; }
+        .gallery { gap: 10px; }
+        .shot, .shot img { min-height: 140px; }
+        .shot figcaption { font-size: 16px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shell topbar">
+      <a class="mini-brand" href="#top">Daniel do Bolo's Adventure</a>
+      <nav aria-label="Navegação principal">
+        <a href="#trailer">Trailer</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#screenshots">Screenshots</a>
+      </nav>
+    </header>
+
+    <main id="top" class="shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-art" src="assets/hero.png" alt="Daniel segurando uma garrafa em uma paisagem litorânea" />
+        <div class="hero-copy">
+          <div class="eyebrow">aventura brasileira em pixel art</div>
+          <h1 id="hero-title">Uma missão. <span>Um herói.</span> Muita cachaça.</h1>
+          <p>Explore a praia de Brasília Teimosa, enfrente perigos e viva a aventura de Daniel do Bolo.</p>
+          <div class="button-row">
+            <a class="button" href="#downloads">Jogar agora</a>
+            <a class="button secondary" href="#trailer">Ver trailer</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="trailer" class="section" aria-labelledby="trailer-title">
+        <div class="section-heading">
+          <p class="kicker">aperte start</p>
+          <h2 id="trailer-title">Veja a aventura em ação</h2>
+          <p>Conheça o mundo, os desafios e o jeitinho único de Daniel antes de começar a jogar.</p>
+        </div>
+        <div class="video-frame">
+          <iframe
+            src="https://www.youtube.com/embed/36M6w6qL2wg?enablejsapi=1&origin=https%3A%2F%2Fwww.fabioad.com.br&widget_referrer=https%3A%2F%2Fwww.fabioad.com.br%2Fdanieldobolo%2F&rel=0&playsinline=1"
+            title="Trailer de Daniel do Bolo's Adventure"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <a class="video-fallback" href="https://www.youtube.com/watch?v=36M6w6qL2wg" target="_blank" rel="noopener noreferrer">▶ Assistir diretamente no YouTube ↗</a>
+      </section>
+
+      <section id="downloads" class="section" aria-labelledby="downloads-title">
+        <div class="section-heading">
+          <p class="kicker">escolha sua plataforma</p>
+          <h2 id="downloads-title">Pegue seu cartucho</h2>
+          <p>Baixe a versão que combina com você e embarque nessa jornada pixelada.</p>
+        </div>
+        <div class="downloads">
+          <article class="download-card google-play">
+            <div class="card-image"><img src="assets/google-play-selo.png" alt="Disponível no Google Play" /></div>
+            <div class="card-content">
+              <h3 class="card-label">GOOGLE PLAY</h3>
+              <p>A versão para a loja do Android está quase chegando.</p>
+              <span class="button card-button soon">Em breve</span>
+            </div>
+          </article>
+
+          <article class="download-card android">
+            <div class="card-image"><img src="assets/app-icon.png" alt="Ícone de Daniel segurando uma garrafa" /></div>
+            <div class="card-content">
+              <h3 class="card-label">ANDROID</h3>
+              <p>Leve a aventura no bolso e jogue onde quiser.</p>
+              <a class="button card-button" href="https://www.fabioad.com.br/danieldobolo/com.fabio.danieldobolo.apk">Baixar APK ↗</a>
+            </div>
+          </article>
+
+          <article class="download-card snes-card">
+            <div class="card-image"><img src="assets/screen-01.jpg" alt="Tela do jogo em uma praia pixelada" /></div>
+            <div class="card-content">
+              <h3 class="card-label">SUPER NINTENDO</h3>
+              <p>Reviva a nostalgia em um cartucho cheio de desafios.</p>
+              <a class="button card-button snes" href="https://www.fabioad.com.br/danieldobolo/DanielDoBolosAdventure.sfc">Baixar ROM ↗</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="physical-section" aria-labelledby="physical-title">
+        <div class="section-heading">
+          <p class="kicker">do emulador para a estante</p>
+          <h2 id="physical-title">Tenha Daniel em um cartucho de verdade</h2>
+          <p>O jogo também pode ganhar uma versão física para jogar no seu Super Nintendo — não fica limitado ao emulador.</p>
+        </div>
+
+        <div class="physical-layout">
+          <div class="cartridge-showcase" aria-label="Modelos de cartucho US e JP">
+            <figure class="cartridge-shot">
+              <img src="assets/cartridge-us.png" alt="Cartucho US de Daniel do Bolo's Adventure" />
+              <figcaption>LABEL US</figcaption>
+            </figure>
+            <figure class="cartridge-shot">
+              <img src="assets/cartridge-jp.png" alt="Cartucho JP de Daniel do Bolo's Adventure" />
+              <figcaption>LABEL JP</figcaption>
+            </figure>
+          </div>
+
+          <div class="physical-copy">
+            <p>Há dois caminhos para levar a aventura à praia de Brasília Teimosa direto para o hardware original:</p>
+            <div class="tech-notes">
+              <article class="tech-note">
+                <h3>PLACA + EPROM</h3>
+                <p>Uma placa compatível recebe a ROM gravada em uma EPROM — memória programável que pode ser apagada com luz UV quando tem janela — ou em uma FlashROM. É a opção artesanal, com cara de cartucho dedicado, mas exige placa correta, gravador, solda e teste de compatibilidade.</p>
+              </article>
+              <article class="tech-note">
+                <h3>EVERDRIVE</h3>
+                <p>Um flashcard com cartão SD carrega diferentes jogos no console real, sem gravar uma EPROM a cada troca. O modelo e o chip de melhoria do jogo importam: o FXPAK Pro tem compatibilidade ampla, enquanto clones e modelos simples podem ter limitações.</p>
+              </article>
+            </div>
+
+            <div class="label-downloads">
+              <p>Baixe as artes para montar o seu cartucho:</p>
+              <div class="button-row">
+                <a class="button" href="https://www.fabioad.com.br/danieldobolo/us.png" download="daniel-do-bolos-label-us.png" target="_blank" rel="noopener noreferrer">Baixar label US ↗</a>
+                <a class="button secondary" href="https://www.fabioad.com.br/danieldobolo/jp.png" download="daniel-do-bolos-label-jp.png" target="_blank" rel="noopener noreferrer">Baixar label JP ↗</a>
+              </div>
+            </div>
+
+            <div class="store-links">
+              <p>Onde procurar no Brasil</p>
+              <a href="https://www.guseretrogames.com.br/" target="_blank" rel="noopener noreferrer">Guse Retrogames ↗</a>
+              <a href="https://www.bitzz.com.br/everdrives" target="_blank" rel="noopener noreferrer">Bitzz EverDrives ↗</a>
+              <a href="https://lista.mercadolivre.com.br/everdrive-snes-sd2snes" target="_blank" rel="noopener noreferrer">Mercado Livre ↗</a>
+              <a href="https://lista.mercadolivre.com.br/memoria-eprom-snes" target="_blank" rel="noopener noreferrer">EPROM no Mercado Livre ↗</a>
+              <p class="safety-note">Estoque e preços variam. Para preservar direitos autorais, use a ROM do jogo apenas em cartuchos e dispositivos que você tenha autorização para utilizar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screenshots" class="section" aria-labelledby="screenshots-title">
+        <div class="section-heading">
+          <p class="kicker">um gostinho do mapa</p>
+          <h2 id="screenshots-title">Pixel por pixel</h2>
+          <p>A praia de Brasília Teimosa é bonita, mas não baixe a guarda: cada fase guarda uma surpresa.</p>
+        </div>
+        <div class="gallery">
+          <figure class="shot" data-full="assets/screen-01.jpg"><img src="assets/screen-01.jpg" alt="Fase de praia com inimigos e barco" /><figcaption>Fase 1-5</figcaption></figure>
+          <figure class="shot" data-full="assets/screen-02.jpg"><img src="assets/screen-02.jpg" alt="Daniel saltando sobre plataformas e espinhos" /><figcaption>Fase 1-6</figcaption></figure>
+          <figure class="shot" data-full="assets/screen-03.jpg"><img src="assets/screen-03.jpg" alt="Daniel enfrentando um inimigo na praia" /><figcaption>Fase 1-6</figcaption></figure>
+          <figure class="shot" data-full="assets/screen-04.png"><img src="assets/screen-04.png" alt="Daniel em uma plataforma sobre o mar" /><figcaption>Fase 1-6</figcaption></figure>
+          <figure class="shot" data-full="assets/map.png"><img src="assets/map.png" alt="Mapa de endereços e fases do jogo" /><figcaption>Mapa da aventura</figcaption></figure>
+          <figure class="shot" data-full="assets/screen-05.png"><img src="assets/screen-05.png" alt="Daniel explorando a praia em uma nova fase" /><figcaption>Explore mais</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="section story" aria-labelledby="story-title">
+        <div class="story-copy">
+          <p class="kicker">feito com carinho no Brasil</p>
+          <h2 id="story-title">A praia é só o começo.</h2>
+          <p>Daniel do Bolo's Adventure mistura humor, a praia de Brasília Teimosa e aquela dificuldade gostosa dos clássicos. Prepare o reflexo, pegue seus itens e descubra até onde essa aventura vai.</p>
+          <a class="button" href="#downloads">Escolher versão</a>
+        </div>
+        <div class="cartridge"><img src="assets/app-icon.png" alt="Arte de Daniel do Bolo's Adventure" /></div>
+      </section>
+
+      <section id="secret-code" class="secret-section" aria-label="Código secreto" hidden>
+        <p><span class="secret-title">CÓDIGO SECRETO (faça na tela de NOVO JOGO):</span> <span class="secret-sequence">CIMA · BAIXO · ESQUERDA · DIREITA · PULAR · CORRER</span></p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell">© 2026 Fabio ADev Tecnologia · Feito para quem ama jogar.</div>
+    </footer>
+
+    <dialog id="lightbox" aria-label="Screenshot ampliado">
+      <button class="close-dialog" type="button">FECHAR</button>
+      <img id="lightbox-image" src="" alt="" />
+    </dialog>
+
+    <script>
+      const lightbox = document.querySelector("#lightbox");
+      const lightboxImage = document.querySelector("#lightbox-image");
+
+      document.querySelectorAll(".shot").forEach((shot) => {
+        shot.addEventListener("click", () => {
+          lightboxImage.src = shot.dataset.full;
+          lightboxImage.alt = shot.querySelector("img").alt;
+          lightbox.showModal();
+        });
+      });
+
+      document.querySelector(".close-dialog").addEventListener("click", () => lightbox.close());
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) lightbox.close();
+      });
+
+      const secretSection = document.querySelector("#secret-code");
+      const secretReleaseDate = new Date("2026-12-01T00:00:00-03:00");
+      const secretTriggerLimit = 30;
+      let backgroundTapCount = 0;
+      let arrowDownCount = 0;
+      let dateWatcher;
+      let secretRevealed = false;
+
+      function revealSecretCode() {
+        if (secretRevealed) return;
+        secretRevealed = true;
+        secretSection.hidden = false;
+        if (dateWatcher) window.clearInterval(dateWatcher);
+      }
+
+      function checkSecretReleaseDate() {
+        if (Date.now() >= secretReleaseDate.getTime()) revealSecretCode();
+      }
+
+      function isInteractiveTarget(target) {
+        return target instanceof Element && target.closest("a, button, input, textarea, select, option, summary, [role=\"button\"]");
+      }
+
+      // Cliques/tocas fora de links e controles contam como tentativas do segredo.
+      document.addEventListener("pointerup", (event) => {
+        if (event.button !== 0 || isInteractiveTarget(event.target)) return;
+        backgroundTapCount += 1;
+        if (backgroundTapCount >= secretTriggerLimit) revealSecretCode();
+      });
+
+      // A seta para baixo funciona como segundo caminho para revelar o quadro.
+      document.addEventListener("keydown", (event) => {
+        const activeTag = document.activeElement && document.activeElement.tagName;
+        if (event.key !== "ArrowDown" || event.repeat || ["INPUT", "TEXTAREA", "SELECT"].includes(activeTag)) return;
+        arrowDownCount += 1;
+        if (arrowDownCount >= secretTriggerLimit) revealSecretCode();
+      });
+
+      dateWatcher = window.setInterval(checkSecretReleaseDate, 60000);
+      checkSecretReleaseDate();
+    </script>
+  </body>
+</html>
