@@ -4,27 +4,32 @@ plugins {
 
 android {
     namespace 'com.fabioad.ddba'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.fabio.danieldobolo'
         minSdk 21
-        targetSdk 34
-        versionCode 110
+        targetSdk 36
+        versionCode 117
         versionName project.version.toString()
     }
 
     signingConfigs {
         release {
-            def propsFile = rootProject.file('android/keystore.properties')
+            def propsFilePath = project.findProperty('androidKeystorePropertiesFile') ?: 'android/keystore.properties'
+            def propsFile = rootProject.file(propsFilePath)
+            def props = new Properties()
             if (propsFile.exists()) {
-                def props = new Properties()
                 propsFile.withInputStream { props.load(it) }
-                storeFile rootProject.file(props['storeFile'])
-                storePassword props['storePassword']
-                keyAlias props['keyAlias']
-                keyPassword props['keyPassword']
             }
+            def storeFilePath = project.findProperty('androidStoreFile') ?: props['storeFile']
+            def storePasswordValue = project.findProperty('androidStorePassword') ?: props['storePassword']
+            def keyAliasValue = project.findProperty('androidKeyAlias') ?: props['keyAlias']
+            def keyPasswordValue = project.findProperty('androidKeyPassword') ?: props['keyPassword']
+            if (storeFilePath != null) storeFile rootProject.file(storeFilePath)
+            if (storePasswordValue != null) storePassword storePasswordValue
+            if (keyAliasValue != null) keyAlias keyAliasValue
+            if (keyPasswordValue != null) keyPassword keyPasswordValue
         }
     }
 

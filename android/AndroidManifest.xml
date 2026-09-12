@@ -10,13 +10,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:isGame="true"
+        android:resizeableActivity="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <activity
             android:name=".app.AndroidLauncher"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
-            android:exported="true"
-            android:screenOrientation="sensorLandscape">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
