@@ -32,6 +32,7 @@ controle do SNES em um porte futuro.
 | Caminhada / corrida | Aceleração e desaceleração progressivas |
 | Gravidade | Puxa o herói para baixo; queda limitada |
 | Pulo variável | Segurar o botão = pulo mais alto |
+| Pulo duplo | Pressionar o botão novamente no ar permite um segundo salto |
 | Colisão por tiles | Chão, paredes, teto, espinhos |
 | Colisão entre entidades | Pisão derrota inimigos; toque lateral causa dano |
 | Câmera lateral | Segue o jogador com suavização |

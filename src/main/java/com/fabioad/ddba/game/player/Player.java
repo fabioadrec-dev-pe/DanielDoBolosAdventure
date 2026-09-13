@@ -16,7 +16,7 @@ import com.fabioad.ddba.game.maps.TileMap;
  * =============================================================================
  * OBJETIVO DA CLASSE:
  *   Implementar o HEROI: leitura de controle, fisica de plataforma (aceleracao,
- *   atrito, gravidade, PULO VARIAVEL), colisao por tiles, maquina de estados de
+ *   atrito, gravidade, PULO VARIAVEL e PULO DUPLO), colisao por tiles, maquina de estados de
  *   animacao e as reacoes a dano/morte/vitoria.
  *
  * ALGORITMOS-CHAVE:
@@ -52,6 +52,7 @@ public final class Player extends Entity {
     private PlayerState state = PlayerState.IDLE;
     private boolean onGround;
     private boolean jumpHeld;
+    private int jumpsUsed;
 
     /** Invencibilidade temporaria (piscar) apos tomar dano. */
     private float invincibleTimer;
@@ -72,6 +73,8 @@ public final class Player extends Entity {
         box.set(x, y, BOX_W, BOX_H);
         vx = vy = 0;
         onGround = false;
+        jumpHeld = false;
+        jumpsUsed = 0;
         state = PlayerState.IDLE;
         stateTime = 0;
         invincibleTimer = 0;
@@ -140,6 +143,9 @@ public final class Player extends Entity {
     public void bounce() {
         vy = GameConfig.PLAYER_JUMP_VELOCITY * 0.6f;
         onGround = false;
+        // O bounce conta como o primeiro salto da sequencia aerea.
+        jumpsUsed = 1;
+        jumpHeld = false;
     }
 
     @Override
@@ -209,14 +215,18 @@ public final class Player extends Entity {
         vx = MathUtils.clamp(vx, -maxSpeed, maxSpeed);
     }
 
-    /** Pulo com altura variavel. */
+    /** Pulo com altura variavel e segundo salto no ar. */
     private void handleJump(float dt) {
         GameInput in = ctx.input;
         boolean jumpDown = in.isDown(GameInput.Action.JUMP);
 
-        if (in.isPressed(GameInput.Action.JUMP) && onGround) {
+        if (in.isPressed(GameInput.Action.JUMP)
+                && (onGround || jumpsUsed < GameConfig.PLAYER_MAX_JUMPS)) {
+            // Se ja esta no chao, inicia uma nova sequencia de saltos.
+            if (onGround) jumpsUsed = 0;
             vy = GameConfig.PLAYER_JUMP_VELOCITY;
             onGround = false;
+            jumpsUsed++;
             jumpHeld = true;
             ctx.audio.playSfx("jump");
         }
@@ -251,7 +261,11 @@ public final class Player extends Entity {
         if (r.hitLeft || r.hitRight) vx = 0;
         if (r.hitCeiling) vy = 0;
         onGround = r.onGround;
-        if (onGround && vy < 0) vy = 0;
+        if (onGround) {
+            jumpsUsed = 0;
+            jumpHeld = false;
+            if (vy < 0) vy = 0;
+        }
 
         // Espinho: checa o tile sob os pes (ignorado enquanto invencivel).
         if (invincibleTimer <= 0f) {

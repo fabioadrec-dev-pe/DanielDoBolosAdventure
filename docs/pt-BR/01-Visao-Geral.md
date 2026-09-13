@@ -37,7 +37,7 @@ Java pelo usuário final.
 - Cinco fases com identidade visual própria, dificuldade crescente, caminhos
   secretos e itens escondidos.
 - Física clássica: caminhada, corrida, aceleração, desaceleração, gravidade,
-  pulo variável, colisão por tiles e entre entidades.
+  pulo variável, pulo duplo, colisão por tiles e entre entidades.
 - Câmera lateral, checkpoints, vidas, moedas, pontuação, tempo, Game Over e vitória.
 - Inimigos com IA própria: pequeno, rápido, resistente, voador e chefe.
 - Tela inicial animada e tela de apresentação do bairro **Brasília Teimosa**.

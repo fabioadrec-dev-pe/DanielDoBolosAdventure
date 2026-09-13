@@ -77,6 +77,9 @@ public final class GameConfig {
     /** Impulso vertical inicial do pulo (px/s, negativo = para cima em coords Y-up). */
     public static final float PLAYER_JUMP_VELOCITY = 300f;
 
+    /** Quantidade maxima de saltos consecutivos antes de tocar o chao. */
+    public static final int PLAYER_MAX_JUMPS = 2;
+
     /**
      * Gravidade reduzida enquanto o botao de pulo e mantido (pulo variavel):
      * quanto menor, mais alto o pulo ao segurar. Classico dos plataformas 16 bits.

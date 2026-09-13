@@ -28,7 +28,7 @@ usuario instalar Java.
 - **Resolucao base:** 256×224 (SNES NTSC), desenhada num framebuffer e ampliada
   por fator **inteiro** (pixel-perfect, com letterbox).
 - **Fisica:** passo fixo (60 Hz) deterministico; aceleracao/atrito, gravidade,
-  **pulo variavel**, colisao por tiles (eixo separado) e entre entidades.
+  **pulo variavel e pulo duplo**, colisao por tiles (eixo separado) e entre entidades.
 - **Fluxo de telas:** Boot → Titulo (animado) → Apresentacao (ruas de Brasilia
   Teimosa, com fade/scroll/zoom/rotacao/paleta/mosaico) → Menu → Fases → Vitoria
   ou Game Over.
