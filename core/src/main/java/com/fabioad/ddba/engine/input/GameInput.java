@@ -73,6 +73,10 @@ public final class GameInput {
         update(renderRef);
     }
 
+    public void dispose() {
+        touchPad.dispose();
+    }
+
     private static boolean isPhysicalControlsConnected() {
         if (Gdx.input.isPeripheralAvailable(Input.Peripheral.HardwareKeyboard)) {
             return true;

@@ -41,6 +41,7 @@ public final class Assets implements Disposable {
 
     // ---- Fonte (placeholder: fonte embutida do LibGDX, escalada e nitida) ----
     private BitmapFont font;
+    private BitmapFont highResFont;
 
     // ---- Animacoes do jogador (nomeadas) ----
     public Animation<TextureRegion> playerIdle;
@@ -107,6 +108,20 @@ public final class Assets implements Disposable {
         }
         font.getData().setScale(1f);
         font.setColor(Color.WHITE);
+
+        if (Gdx.files.internal(AssetPaths.FONT_HIGH_RES).exists()) {
+            highResFont = new BitmapFont(Gdx.files.internal(AssetPaths.FONT_HIGH_RES));
+            highResFont.setUseIntegerPositions(false);
+            for (int i = 0; i < highResFont.getRegions().size; i++) {
+                highResFont.getRegion(i).getTexture().setFilter(
+                        Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            }
+            highResFont.getData().setScale(1f);
+            highResFont.setColor(Color.WHITE);
+        } else {
+            Gdx.app.log("Assets", "Fonte de alta resolucao ausente; usando a fonte pixel.");
+            highResFont = font;
+        }
     }
 
     private void loadPlayer() {
@@ -230,9 +245,14 @@ public final class Assets implements Disposable {
         return font;
     }
 
+    public BitmapFont getHighResFont() {
+        return highResFont;
+    }
+
     @Override
     public void dispose() {
         if (font != null) font.dispose();
+        if (highResFont != null && highResFont != font) highResFont.dispose();
         for (Texture t : managedTextures) {
             t.dispose();
         }

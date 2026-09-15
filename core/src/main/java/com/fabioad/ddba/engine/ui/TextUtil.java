@@ -56,6 +56,21 @@ public final class TextUtil {
         font.setColor(pc);
     }
 
+    /** Desenha usando a escala exata informada, sem arredondar para 1x/2x. */
+    public static void drawCenteredExact(SpriteBatch batch, BitmapFont font, String text,
+                                         float centerX, float y, float scale, Color color) {
+        float px = font.getData().scaleX;
+        float py = font.getData().scaleY;
+        Color pc = font.getColor().cpy();
+        font.getData().setScale(scale);
+        font.setColor(color);
+        LAYOUT.setText(font, text);
+        float x = centerX - LAYOUT.width / 2f;
+        font.draw(batch, text, x, y);
+        font.getData().setScale(px, py);
+        font.setColor(pc);
+    }
+
     /** Desenha texto alinhado a esquerda em (x, y) com escala/cor. */
     public static void draw(SpriteBatch batch, BitmapFont font, String text,
                             float x, float y, float scale, Color color) {
@@ -106,6 +121,34 @@ public final class TextUtil {
             }
             if (line.length() > 0) lines.add(line.toString());
         }
+        return lines.toArray(new String[0]);
+    }
+
+    /** Versao de wrap para fontes de alta resolucao com escala fracionaria. */
+    public static String[] wrapExact(BitmapFont font, String text, float scale, float maxWidth) {
+        java.util.ArrayList<String> lines = new java.util.ArrayList<>();
+        float px = font.getData().scaleX;
+        float py = font.getData().scaleY;
+        font.getData().setScale(scale);
+        for (String paragraph : text.split("\\n", -1)) {
+            if (paragraph.isEmpty()) {
+                lines.add("");
+                continue;
+            }
+            String line = "";
+            for (String word : paragraph.split(" ")) {
+                String trial = line.isEmpty() ? word : line + " " + word;
+                LAYOUT.setText(font, trial);
+                if (LAYOUT.width <= maxWidth || line.isEmpty()) {
+                    line = trial;
+                } else {
+                    lines.add(line);
+                    line = word;
+                }
+            }
+            if (!line.isEmpty()) lines.add(line);
+        }
+        font.getData().setScale(px, py);
         return lines.toArray(new String[0]);
     }
 }

@@ -16,7 +16,7 @@ import com.fabioad.ddba.game.stages.BootScreen;
  * DECISOES DE ARQUITETURA:
  *   - "Composition root": e o unico lugar que instancia servicos e sessao, e os
  *     injeta nas telas (via getters). Evita singletons globais.
- *   - Boot em duas fases: cria contexto -> BootScreen carrega assets -> Title.
+ *   - Boot em duas fases: cria contexto -> BootScreen carrega assets -> Trailer -> Title.
  *
  * PORTABILIDADE:
  *   - Em C, isto seria a funcao main() + um "state machine" de telas por ponteiros
@@ -31,7 +31,7 @@ public final class DanielGame extends Game {
     public void create() {
         this.ctx = new GameContext();
         this.session = new GameSession();
-        // A tela de boot carrega os assets e depois vai para o titulo.
+        // A tela de boot carrega os assets e depois apresenta a abertura.
         setScreen(new BootScreen(this));
     }
 

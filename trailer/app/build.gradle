@@ -1,0 +1,27 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.danieldobolo.adventure"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.danieldobolo.adventure.trailer"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    androidResources {
+        // MediaPlayer.openFd() needs these assets to remain seekable in the APK.
+        noCompress += ["ogg", "webp"]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}

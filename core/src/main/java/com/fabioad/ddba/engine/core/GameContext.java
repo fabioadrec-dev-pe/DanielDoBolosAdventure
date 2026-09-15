@@ -40,6 +40,7 @@ public final class GameContext implements Disposable {
     @Override
     public void dispose() {
         // Ordem inversa a criacao dos recursos pesados.
+        input.dispose();
         assets.dispose();
         render.dispose();
         audio.dispose();

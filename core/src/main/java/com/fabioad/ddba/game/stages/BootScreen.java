@@ -9,7 +9,7 @@ import com.fabioad.ddba.game.core.DanielGame;
  * =============================================================================
  * OBJETIVO DA CLASSE:
  *   Primeira tela do jogo: CARREGA todos os assets (texturas, animacoes, SFX) e,
- *   em seguida, transiciona para a tela de titulo. Isola o carregamento do resto.
+ *   em seguida, transiciona para a abertura/trailer. Isola o carregamento do resto.
  *
  * DECISAO DE ARQUITETURA:
  *   O carregamento e feito no primeiro tick logico e a troca de tela no tick
@@ -41,7 +41,7 @@ public final class BootScreen extends BaseGameScreen {
         }
         ticks++;
         if (ticks >= 2) {
-            game.changeScreen(new TitleScreen(game));
+            game.changeScreen(new TrailerScreen(game));
         }
     }
 

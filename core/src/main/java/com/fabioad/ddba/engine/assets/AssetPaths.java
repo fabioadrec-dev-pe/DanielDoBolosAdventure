@@ -49,6 +49,8 @@ public final class AssetPaths {
 
     /** Fonte pixel (BMFont) — nitida no canvas 256x224. */
     public static final String FONT_PIXEL = "fonts/pixel.fnt";
+    /** Fonte suavizada em alta resolucao — usada somente no trailer e endings. */
+    public static final String FONT_HIGH_RES = "fonts/pixelon-hi.fnt";
 
     // ----- MUSICA ------------------------------------------------------------
     public static final String MUSIC_MENU = "music/menu.ogg";
@@ -59,6 +61,9 @@ public final class AssetPaths {
     /** Tema de creditos apos o stage 5 (convertido de victory.mid). */
     public static final String MUSIC_VICTORY_FINAL = "music/victory_final.ogg";
     public static final String MUSIC_GAMEOVER = "music/gameover.ogg";
+
+    /** Trilha sincronizada da abertura/trailer em tempo real. */
+    public static final String MUSIC_TRAILER = "trailer/music.ogg";
 
     // ----- EFEITOS SONOROS (SFX) --------------------------------------------
     public static final String SFX_JUMP = "sfx/jump.wav";
