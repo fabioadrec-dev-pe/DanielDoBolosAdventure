@@ -309,6 +309,69 @@
 
       .video-fallback:hover { color: var(--yellow); }
 
+      .video-carousel { position: relative; }
+
+      .carousel-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .carousel-button {
+        min-width: 48px;
+        min-height: 44px;
+        padding: 8px 12px;
+        border: 3px solid var(--ink);
+        border-radius: 8px;
+        color: var(--ink);
+        background: var(--yellow);
+        box-shadow: 4px 4px 0 var(--ink);
+        font-family: "Press Start 2P", monospace;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      }
+
+      .carousel-button:hover,
+      .carousel-button:focus-visible {
+        filter: brightness(1.08);
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 var(--ink);
+      }
+
+      .carousel-button:focus-visible { outline: 3px solid var(--bright-green); outline-offset: 3px; }
+
+      .carousel-status {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .carousel-title { color: var(--cream); }
+
+      .carousel-dots { display: flex; gap: 10px; }
+
+      .carousel-dot {
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        border: 2px solid var(--cream);
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .carousel-dot[aria-current="true"] { border-color: var(--yellow); background: var(--yellow); }
+
+      .carousel-dot:focus-visible { outline: 3px solid var(--bright-green); outline-offset: 3px; }
+
       .downloads {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -604,17 +667,33 @@
           <h2 id="trailer-title">Veja a aventura em ação</h2>
           <p>Conheça o mundo, os desafios e o jeitinho único de Daniel antes de começar a jogar.</p>
         </div>
-        <div class="video-frame">
-          <iframe
-            src="https://www.youtube.com/embed/36M6w6qL2wg?enablejsapi=1&origin=https%3A%2F%2Fwww.fabioad.com.br&widget_referrer=https%3A%2F%2Fwww.fabioad.com.br%2Fdanieldobolo%2F&rel=0&playsinline=1"
-            title="Trailer de Daniel do Bolo's Adventure"
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
+        <div class="video-carousel" aria-roledescription="carrossel" aria-label="Vídeos de Daniel do Bolo's Adventure">
+          <div class="video-frame">
+            <iframe
+              id="trailer-frame"
+              src="https://www.youtube.com/embed/36M6w6qL2wg?enablejsapi=1&origin=https%3A%2F%2Fwww.fabioad.com.br&widget_referrer=https%3A%2F%2Fwww.fabioad.com.br%2Fdanieldobolo%2F&rel=0&playsinline=1"
+              title="Trailer de Daniel do Bolo's Adventure"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-button" id="trailer-previous" type="button" aria-label="Vídeo anterior">◀</button>
+            <div class="carousel-status" aria-live="polite">
+              <span><span id="trailer-position">1</span> / 3</span>
+              <span class="carousel-title" id="trailer-current-title">Trailer de Daniel do Bolo's Adventure</span>
+              <div class="carousel-dots" aria-label="Selecionar vídeo">
+                <button class="carousel-dot" type="button" aria-label="Mostrar vídeo 1" aria-current="true"></button>
+                <button class="carousel-dot" type="button" aria-label="Mostrar vídeo 2" aria-current="false"></button>
+                <button class="carousel-dot" type="button" aria-label="Mostrar vídeo 3" aria-current="false"></button>
+              </div>
+            </div>
+            <button class="carousel-button" id="trailer-next" type="button" aria-label="Próximo vídeo">▶</button>
+          </div>
         </div>
-        <a class="video-fallback" href="https://www.youtube.com/watch?v=36M6w6qL2wg" target="_blank" rel="noopener noreferrer">▶ Assistir diretamente no YouTube ↗</a>
+        <a class="video-fallback" id="trailer-fallback" href="https://www.youtube.com/watch?v=36M6w6qL2wg" target="_blank" rel="noopener noreferrer">▶ Assistir diretamente no YouTube ↗</a>
       </section>
 
       <section id="downloads" class="section" aria-labelledby="downloads-title">
@@ -748,6 +827,94 @@
     <script>
       const lightbox = document.querySelector("#lightbox");
       const lightboxImage = document.querySelector("#lightbox-image");
+
+      const trailerFrame = document.querySelector("#trailer-frame");
+      const trailerFallback = document.querySelector("#trailer-fallback");
+      const trailerPosition = document.querySelector("#trailer-position");
+      const trailerCurrentTitle = document.querySelector("#trailer-current-title");
+      const trailerDots = [...document.querySelectorAll(".carousel-dot")];
+      const trailerVideos = [
+        {
+          id: "36M6w6qL2wg",
+          title: "Trailer de Daniel do Bolo's Adventure"
+        },
+        {
+          id: "taJcGPlKWDM",
+          title: "Novo vídeo de Daniel do Bolo's Adventure"
+        },
+        {
+          id: "7v_PYeiSQvc",
+          title: "Vídeo de Daniel do Bolo's Adventure"
+        }
+      ];
+      let currentTrailer = 0;
+      let trailerTimer;
+      let trailerPlayer;
+      let trailerIsPlaying = false;
+      const trailerRotationDelay = 10000;
+
+      function trailerUrl(videoId) {
+        return `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=https%3A%2F%2Fwww.fabioad.com.br&widget_referrer=https%3A%2F%2Fwww.fabioad.com.br%2Fdanieldobolo%2F&rel=0&playsinline=1`;
+      }
+
+      function stopTrailerRotation() {
+        window.clearInterval(trailerTimer);
+        trailerTimer = undefined;
+      }
+
+      function startTrailerRotation() {
+        stopTrailerRotation();
+        if (trailerIsPlaying) return;
+        trailerTimer = window.setInterval(() => {
+          if (trailerIsPlaying) {
+            stopTrailerRotation();
+            return;
+          }
+          showTrailer(currentTrailer + 1, false);
+        }, trailerRotationDelay);
+      }
+
+      function handleTrailerStateChange(event) {
+        trailerIsPlaying = event.data === window.YT.PlayerState.PLAYING;
+        if (trailerIsPlaying) stopTrailerRotation();
+        else startTrailerRotation();
+      }
+
+      function initTrailerPlayer() {
+        if (trailerPlayer || !window.YT || !window.YT.Player) return;
+        trailerPlayer = new window.YT.Player(trailerFrame, {
+          events: { onStateChange: handleTrailerStateChange }
+        });
+      }
+
+      window.onYouTubeIframeAPIReady = initTrailerPlayer;
+      const youtubeApi = document.createElement("script");
+      youtubeApi.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(youtubeApi);
+
+      function showTrailer(index, shouldRestartTimer = true) {
+        currentTrailer = (index + trailerVideos.length) % trailerVideos.length;
+        const video = trailerVideos[currentTrailer];
+        trailerIsPlaying = false;
+        if (trailerPlayer && typeof trailerPlayer.cueVideoById === "function") {
+          trailerPlayer.cueVideoById(video.id);
+        } else {
+          trailerFrame.src = trailerUrl(video.id);
+        }
+        trailerFrame.title = video.title;
+        trailerFallback.href = `https://www.youtube.com/watch?v=${video.id}`;
+        trailerPosition.textContent = String(currentTrailer + 1);
+        trailerCurrentTitle.textContent = video.title;
+        trailerDots.forEach((dot, dotIndex) => {
+          dot.setAttribute("aria-current", String(dotIndex === currentTrailer));
+        });
+        if (shouldRestartTimer) startTrailerRotation();
+      }
+
+      document.querySelector("#trailer-previous").addEventListener("click", () => showTrailer(currentTrailer - 1));
+      document.querySelector("#trailer-next").addEventListener("click", () => showTrailer(currentTrailer + 1));
+      trailerDots.forEach((dot, dotIndex) => dot.addEventListener("click", () => showTrailer(dotIndex)));
+      showTrailer(0);
 
       document.querySelectorAll(".shot").forEach((shot) => {
         shot.addEventListener("click", () => {
